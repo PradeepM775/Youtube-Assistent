@@ -1,4 +1,4 @@
-# Frameflow — YouTube Studio Assistant
+# F.R.A.M.E. — YouTube Studio Assistant
 
 A responsive, open-source workspace for planning videos across multiple YouTube channels. Create long-form and Shorts projects, organize scripts and assets, track production stages, and keep project files in Google Drive. The frontend is static HTML/CSS/vanilla JavaScript and can be hosted on GitHub Pages; Google Apps Script provides an optional backend using your own Google Sheet and Drive.
 
@@ -10,6 +10,7 @@ A responsive, open-source workspace for planning videos across multiple YouTube 
 - Project workspace with title, description, script, asset list and per-stage checkboxes.
 - Per-project Drive folders and file uploads after connecting Apps Script.
 - Activity timeline, JSON backup and import.
+- Media Library with search and file-type filters, image previews, and video/audio playback. Local-only uploads use browser IndexedDB; connected uploads use Google Drive.
 - Works locally in the current browser before cloud setup. Browser data is not shared across devices.
 - Each person supplies their own Apps Script URL. This repository contains no credentials.
 
@@ -21,7 +22,7 @@ A responsive, open-source workspace for planning videos across multiple YouTube 
 4. Open the published Pages URL. No Node, build step or localhost server is needed.
 5. In the app, visit **Settings** to add channels and customize your workflow. You can use the app in local-only mode immediately.
 
-GitHub Pages is static hosting. It cannot create folders on a visitor's computer. Files selected in the browser are uploaded to that user's Google Drive only after Apps Script setup; without that connection, Frameflow records asset names in browser storage and does not retain the file contents.
+GitHub Pages is static hosting. It cannot create folders on a visitor's computer. Files selected in the browser are uploaded to that user's Google Drive only after Apps Script setup; without that connection, F.R.A.M.E. stores uploaded file contents in this browser's IndexedDB; the files do not sync across devices.
 
 ## Connect your own Google Sheets and Drive
 
@@ -32,7 +33,7 @@ Each fork/user should create a private deployment tied to their Google account. 
 3. Select **Deploy → New deployment → Web app**.
 4. Set **Execute as** to your account. For personal use, choose the narrowest **Who has access** option that includes you (typically **Only myself**). The exact available choices depend on the Google account type and organization policy.
 5. Deploy, complete Google's authorization prompts for Sheets and Drive, and copy the web app URL ending in `/exec`.
-6. In Frameflow **Settings**, paste that URL and choose **Save**. Select **Test connection**. The first backend use creates your spreadsheet and `Frameflow Projects` Drive folder automatically.
+6. In F.R.A.M.E. **Settings**, paste that URL and choose **Save**. Select **Test connection**. The first backend use creates your spreadsheet and `F.R.A.M.E. Projects` Drive folder automatically.
 7. Create a project. The backend adds its row to Sheets and creates its Drive folder. Upload files from the project workspace.
 
 To update the Apps Script after editing its source, use **Deploy → Manage deployments → Edit**, select a new version and deploy. The existing `/exec` URL normally remains the same.
@@ -51,7 +52,7 @@ This browser uploader caps each file at **25 MB**. Apps Script requests pass fil
 
 ## Data and backup
 
-- Without Apps Script, data is stored in this browser's local storage. Clearing browser site data removes it; use **Settings → Backup & portability** to download JSON regularly.
+- Without Apps Script, project metadata is stored in local storage and uploaded file bytes are stored in IndexedDB in that browser. Clearing browser site data removes both. JSON backups contain file references and metadata, not file bytes.
 - With Apps Script configured, settings and project metadata are stored in the generated Sheet; uploaded file contents live in Drive.
 - JSON backups contain project metadata, tasks and asset references, not the bytes of uploaded assets. Importing a backup restores metadata and creates missing project Drive folders; it does not copy referenced files.
 - Disabling or deleting a channel does not delete its projects. Deleting a project deletes its metadata only; existing Drive files/folders are retained.

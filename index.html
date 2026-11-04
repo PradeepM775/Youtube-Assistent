@@ -3,16 +3,16 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#101117"><meta name="description" content="Plan, organize and track every video project across your YouTube channels.">
-  <title>Frameflow — YouTube Studio Assistant</title><link rel="stylesheet" href="styles.css">
+  <title>F.R.A.M.E. — YouTube Studio Assistant</title><link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <div class="app-shell">
   <aside class="sidebar" id="sidebar">
-    <a class="brand" href="#"><span class="brand-mark">▶</span><span>frameflow<small>STUDIO ASSISTANT</small></span></a>
+    <a class="brand" href="#"><span class="brand-mark">▶</span><span>F.R.A.M.E.<small>STUDIO ASSISTANT</small></span></a>
     <div class="workspace-label">WORKSPACE <span class="live-dot"></span></div>
     <nav class="nav-main" aria-label="Main navigation">
       <button class="nav-link active" data-view="dashboard"><span>▦</span> Overview</button>
-      <button class="nav-link" data-view="projects"><span>▤</span> Projects <b id="nav-count">0</b></button>
+      <button class="nav-link" data-view="projects"><span>▤</span> Projects <b id="nav-count">0</b></button><button class="nav-link" data-view="media"><span>▧</span> Media library <b id="media-count">0</b></button>
       <button class="nav-link" data-view="activity"><span>◷</span> Activity</button>
     </nav>
     <div class="side-divider"></div><div class="section-label">YOUR CHANNELS <button id="quick-channel" aria-label="Add channel">＋</button></div>
@@ -27,6 +27,6 @@
 <dialog id="project-dialog" class="modal"><form id="project-form" method="dialog"><div class="modal-head"><div><div class="eyebrow">NEW VIDEO PROJECT</div><h2>Start something great.</h2></div><button type="button" class="icon-btn close-modal" aria-label="Close">×</button></div><div class="form-grid"><label class="full">Project name<input name="name" required maxlength="120" placeholder="e.g. The story behind the stars"></label><label>Channel<select name="channel" id="project-channel" required></select></label><label>Format<select name="format" id="project-format" required></select></label><label>Category<select name="category" id="project-category"></select></label><label>Language<select name="language" id="project-language"></select></label><label class="full">Video title<input name="title" maxlength="120" placeholder="YouTube title (can be added later)"></label><label class="full">Description<textarea name="description" rows="3" placeholder="What's this video about?"></textarea></label></div><div class="modal-foot"><span class="muted">You can refine details any time.</span><button class="button button-primary" type="submit">Create project <span>→</span></button></div></form></dialog>
 <dialog id="channel-dialog" class="modal small-modal"><form id="channel-form" method="dialog"><div class="modal-head"><div><div class="eyebrow">CHANNEL SETTINGS</div><h2 id="channel-dialog-title">Add a channel</h2></div><button type="button" class="icon-btn close-modal" aria-label="Close">×</button></div><label>Channel name<input name="name" required maxlength="60" placeholder="Your channel name"></label><label>Channel URL <span class="muted">(optional)</span><input name="url" type="url" placeholder="https://youtube.com/@yourchannel"></label><input type="hidden" name="id"><div class="modal-foot"><span></span><button class="button button-primary">Save channel</button></div></form></dialog>
 <dialog id="confirm-dialog" class="modal small-modal"><form method="dialog"><div class="modal-head"><div><div class="eyebrow">REMOVE CHANNEL</div><h2>Delete this channel?</h2></div><button type="button" class="icon-btn close-modal">×</button></div><p class="muted">Projects assigned to this channel will stay in your workspace.</p><div class="modal-foot"><button class="button button-quiet" value="cancel">Keep channel</button><button class="button button-danger" id="confirm-delete" value="ok">Delete channel</button></div></form></dialog>
-<div id="toast" class="toast" role="status"></div>
+<dialog id="media-dialog" class="modal media-modal"><div class="media-modal-head"><div id="media-modal-title">Preview</div><button type="button" class="icon-btn" id="close-media" aria-label="Close">×</button></div><div id="media-viewer"></div><div class="media-modal-foot" id="media-modal-meta"></div></dialog><div id="toast" class="toast" role="status"></div>
 <script src="app.js"></script>
 </body></html>
