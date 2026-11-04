@@ -1,75 +1,58 @@
 # F.R.A.M.E. — YouTube Studio Assistant
 
-A responsive, open-source workspace for planning videos across multiple YouTube channels. Create long-form and Shorts projects, organize scripts and assets, track production stages, and keep project files in Google Drive. The frontend is static HTML/CSS/vanilla JavaScript and can be hosted on GitHub Pages; Google Apps Script provides an optional backend using your own Google Sheet and Drive.
+A responsive, open-source YouTube production workspace. Plan projects, compare three title options, keep multiple script drafts, organize media, track workflow stages, and sync work across devices with your own Google Apps Script, Sheets and Drive.
 
 ## Features
 
-- Dashboard with project totals, recent work and workflow progress.
-- Dynamic channel management: add, edit, enable, disable and delete channels.
-- Configurable video formats, categories, languages and workflow stages.
-- Project workspace with title, description, script, asset list and per-stage checkboxes.
-- Per-project Drive folders and file uploads after connecting Apps Script.
-- Activity timeline, JSON backup and import.
-- Media Library with search and file-type filters, image previews, and video/audio playback. Local-only uploads use browser IndexedDB; connected uploads use Google Drive.
-- Works locally in the current browser before cloud setup. Browser data is not shared across devices.
-- Each person supplies their own Apps Script URL. This repository contains no credentials.
+- Responsive dashboard, project board and media library.
+- Project settings for channel, long video/Shorts, category, language, title and description.
+- Three A/B title fields, per-field copy buttons, and description copy.
+- Multiple named script drafts per project with add, save, delete and copy actions.
+- Per-stage production tracking, activity log, backup and import.
+- Optional Apps Script backend: each account has separate settings, project data and Drive folder.
+- Admin-only account panel to create, enable, disable and reset member accounts.
+- Vanilla HTML, CSS and JavaScript frontend; no build step or package manager.
 
-## Quick start: GitHub Pages
+## Publish the frontend with GitHub Pages
 
-1. Fork this repository, or create a repository and add these files.
-2. In GitHub, open **Settings → Pages**.
-3. Choose **Deploy from a branch**, select your default branch and `/ (root)`, then save.
-4. Open the published Pages URL. No Node, build step or localhost server is needed.
-5. In the app, visit **Settings** to add channels and customize your workflow. You can use the app in local-only mode immediately.
+1. Fork this repository or upload these files to your own GitHub repository.
+2. Open **Settings → Pages**. Choose **Deploy from a branch**, select your default branch and `/ (root)`, then save.
+3. Open the published Pages address. The app works in local-only mode in that browser until cloud setup is complete.
 
-GitHub Pages is static hosting. It cannot create folders on a visitor's computer. Files selected in the browser are uploaded to that user's Google Drive only after Apps Script setup; without that connection, F.R.A.M.E. stores uploaded file contents in this browser's IndexedDB; the files do not sync across devices.
+## Set up your private backend
 
-## Connect your own Google Sheets and Drive
+Each fork owner must deploy their own Apps Script, Sheet and Drive storage. Do not use somebody else's deployment URL.
 
-Each fork/user should create a private deployment tied to their Google account. Do not share a deployment URL with strangers. Apps Script web app access controls determine who can call it; this minimal app is intended for one owner's personal workspace, not as a public multi-user service.
+1. Sign in to the Google account that will own the studio data and open [script.google.com](https://script.google.com).
+2. Create a project. Replace its source with the full contents of `apps-script/Code.gs` and save.
+3. In the function selector, run **`initializeBootstrapKey`** once. Approve Google Sheets and Drive access. Open the execution log and copy the one-time key. Keep it private. If you already ran the function and lost the key, delete the `BOOTSTRAP_KEY` Script Property in **Project Settings → Script Properties**, then run the function again.
+4. Select **Deploy → New deployment → Web app**. Set **Execute as** to your Google account. Choose the access option that allows the app's intended users to reach the endpoint (usually **Anyone**). Google account policy may restrict this option. Copy the URL ending in `/exec`.
+5. In the GitHub Pages app, paste that URL in the sign-in screen under **Change Apps Script address**, then save it.
+6. Choose **Set up the first administrator**. Enter the one-time key, your admin user ID, and a strong password of at least 12 characters. The key is removed after the first admin is created.
+7. Sign in. In **Settings → Admin · user accounts**, create member IDs and initial passwords. Give each member their credentials privately. Users can change their own passwords; the admin can disable accounts or reset passwords.
+8. Open the same Pages address on another computer and enter the same Apps Script URL. Sign in with the same account to access that account's synced projects and settings.
 
-1. Sign in to the Google account that should own the studio data. Create a new Apps Script project at [script.google.com](https://script.google.com).
-2. Replace the starter source with `apps-script/Code.gs` and save.
-3. Select **Deploy → New deployment → Web app**.
-4. Set **Execute as** to your account. For personal use, choose the narrowest **Who has access** option that includes you (typically **Only myself**). The exact available choices depend on the Google account type and organization policy.
-5. Deploy, complete Google's authorization prompts for Sheets and Drive, and copy the web app URL ending in `/exec`.
-6. In F.R.A.M.E. **Settings**, paste that URL and choose **Save**. Select **Test connection**. The first backend use creates your spreadsheet and `F.R.A.M.E. Projects` Drive folder automatically.
-7. Create a project. The backend adds its row to Sheets and creates its Drive folder. Upload files from the project workspace.
+The Sheet and Drive files belong to the Google account that deployed the script. Each application account has its own project data and Drive folder. The administrator can create accounts and manage members, while ordinary members cannot access the admin actions. Sessions expire after seven days. Passwords are stored as salted hashes; session tokens are stored in the browser.
 
-To update the Apps Script after editing its source, use **Deploy → Manage deployments → Edit**, select a new version and deploy. The existing `/exec` URL normally remains the same.
+### Deployment access and security
 
-### Permissions and safety
+A custom account form needs the Apps Script endpoint to be reachable from the browser. If you select an access mode such as **Anyone**, the endpoint can be reached by others too; the app requires a valid account session for data actions, separates data by account, and limits repeated failed logins. Keep the bootstrap key and account passwords private, use strong passwords, and disable accounts that should no longer sign in. The Apps Script deployment runs with its owner's Google permissions, so deploy only your own reviewed source and check Google's consent prompts. If your organization does not permit the required web app access mode, this custom login flow cannot sync across separate users/devices under that policy.
 
-- The Apps Script requests access to create/read its Sheet and Drive files. Review Google's consent screen before authorizing.
-- `SPREADSHEET_ID` and `DRIVE_FOLDER_ID` are kept in that script's Script Properties. They are not embedded in the Pages site.
-- Do not change the deployment to anonymous/public access for convenience. Anyone who can call an unprotected script running as you could access or change your data.
-- Apps Script web apps have evolving access policies, quotas and runtime limits. If your account does not allow the selected access mode, keep the frontend in local-only mode or adapt the backend with a proper authenticated service.
-- This starter is single-owner and does not implement account login, team permissions, or YouTube publishing/API integration.
+After changing `Code.gs`, use **Deploy → Manage deployments → Edit**, select a new version and deploy. The `/exec` URL normally remains unchanged. The static app can be updated by pushing changed files to the Pages branch.
 
-## Upload limits
+## Browser uploads and local mode
 
-This browser uploader caps each file at **25 MB**. Apps Script requests pass file bytes as base64, which increases request size and can run into Apps Script execution/request limits. It is suitable for scripts, images, audio snippets and small references, not full-resolution source footage. For large video, upload it directly to Drive (in the project's folder) and keep the link in the project, or replace the uploader with a resumable authenticated upload service. Drive quotas and storage depend on the user's Google account.
+Uploads are limited to 25 MB per file in this starter. Apps Script base64 requests can reach runtime/request limits below that size, so use Drive directly for large source footage. In local-only mode, files are held in that browser's IndexedDB and do not follow you to another computer. Cloud mode stores file contents in the project's Drive folder.
 
-## Data and backup
+Existing local project metadata is offered for import into the first admin account when the server has no projects. Browser-held file bytes do not migrate; upload those files again or add them directly to Drive. JSON backup files contain project metadata and asset references, not the actual media bytes.
 
-- Without Apps Script, project metadata is stored in local storage and uploaded file bytes are stored in IndexedDB in that browser. Clearing browser site data removes both. JSON backups contain file references and metadata, not file bytes.
-- With Apps Script configured, settings and project metadata are stored in the generated Sheet; uploaded file contents live in Drive.
-- JSON backups contain project metadata, tasks and asset references, not the bytes of uploaded assets. Importing a backup restores metadata and creates missing project Drive folders; it does not copy referenced files.
-- Disabling or deleting a channel does not delete its projects. Deleting a project deletes its metadata only; existing Drive files/folders are retained.
+## Repository contents
 
-## Repository layout
-
-```text
-index.html              App shell
-styles.css              Responsive visual design
-app.js                  Vanilla JavaScript client and local/cloud data flow
-apps-script/Code.gs      Google Apps Script API
-LICENSE                 MIT License
-```
-
-## Customization
-
-Use **Settings** for channels, formats, categories, languages and workflow stages. The defaults are only starting values. The app uses no framework, package manager or build system.
+- `index.html` — app shell
+- `styles.css` — responsive design
+- `app.js` — frontend and account experience
+- `apps-script/Code.gs` — Apps Script API and account storage
+- `LICENSE` — MIT License
 
 ## License
 
